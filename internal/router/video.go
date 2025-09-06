@@ -117,18 +117,18 @@ func (h *Handler) getVideo(c *gin.Context) error {
 func downloadStream(client youtube.Client, video *youtube.Video, format *youtube.Format, filePath string) error {
 	stream, _, err := client.GetStream(video, format)
 	if err != nil {
-		return types.ErrInternalServerError(err)
+		return types.ErrInternalServerError(fmt.Errorf("error getting stream: %w",err))
 	}
 	defer stream.Close()
 
 	file, err := os.Create(filePath)
 	if err != nil {
-		return types.ErrInternalServerError(err)
+		return types.ErrInternalServerError(fmt.Errorf("error creating file: %w",err))
 	}
 	defer file.Close()
 
 	_, err = io.Copy(file, stream)
-	return types.ErrInternalServerError(err)
+	return err
 }
 
 func sanitizeFilename(name string) string {

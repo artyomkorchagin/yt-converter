@@ -9,6 +9,7 @@ A self-hosted YouTube video downloader built with Go, Gin, and FFmpeg. Download 
 
 ## Built with
 - Gin
+- Youtube by kkdai
 - Viper
 - Zap
   

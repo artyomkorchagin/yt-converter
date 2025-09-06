@@ -4,7 +4,7 @@ build:
 	docker build -t yt-converter .
 
 up:
-	docker run -d -p 3000:3000 --name yt-converter-app yt-converter
+	docker run -d -p 80:3000 --name yt-converter-app yt-converter
 
 down:
 	docker stop yt-converter-app || true

@@ -58,7 +58,7 @@ func main() {
 
 	go func() {
 		zapLogger.Info("Server starting", zap.String("port", port))
-		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		if err := srv.ListenAndServeTLS("./cert.pem", "./privkey.pem"); err != nil && err != http.ErrServerClosed {
 			zapLogger.Fatal("Server failed to start", zap.Error(err))
 		}
 	}()

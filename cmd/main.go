@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
 	"log"
 	"net/http"
 	"os"
@@ -15,15 +16,6 @@ import (
 	"github.com/artyomkorchagin/yt-converter/internal/logger"
 	"github.com/artyomkorchagin/yt-converter/internal/router"
 )
-
-//	@title			Comfortel Task
-//	@version		1.0
-
-//	@contact.name	Artyom Korchagin
-//	@contact.email	artyomkorchagin333@gmail.com
-
-//	@host		localhost:3000
-//	@BasePath	/
 
 func main() {
 	var err error
@@ -50,10 +42,16 @@ func main() {
 	handler := router.NewHandler(zapLogger)
 	r := handler.InitRouter()
 
+	tlsConfig := &tls.Config{
+		MinVersion: tls.VersionTLS12,
+		MaxVersion: tls.VersionTLS12,
+	}
+
 	port := cfg.Port
 	srv := &http.Server{
-		Addr:    cfg.Host + ":" + port,
-		Handler: r,
+		Addr:      cfg.Host + ":" + port,
+		Handler:   r,
+		TLSConfig: tlsConfig,
 	}
 
 	go func() {

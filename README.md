@@ -12,6 +12,7 @@ A self-hosted YouTube video downloader built with Go, Gin, and FFmpeg. Download 
 - Youtube by kkdai
 - Viper
 - Zap
+- FFmpeg
   
 ## Installation
 

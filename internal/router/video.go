@@ -12,6 +12,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/kkdai/youtube/v2"
 	ffmpeg_go "github.com/u2takey/ffmpeg-go"
+	"go.uber.org/zap"
 )
 
 func (h *Handler) getVideo(c *gin.Context) error {
@@ -47,7 +48,13 @@ func (h *Handler) getVideo(c *gin.Context) error {
 	if err != nil {
 		return types.ErrInternalServerError(fmt.Errorf("failed to create temp dir: %w", err))
 	}
-	defer os.RemoveAll(tempDir)
+
+	// Clean up temp directory when function exits
+	defer func() {
+		if err := os.RemoveAll(tempDir); err != nil {
+			h.logger.Error("failed to remove temp dir", zap.Error(err))
+		}
+	}()
 
 	videoFile := filepath.Join(tempDir, "video.mp4")
 	audioFile := filepath.Join(tempDir, "audio.m4a")
@@ -97,7 +104,13 @@ func (h *Handler) getVideo(c *gin.Context) error {
 	if err != nil {
 		return types.ErrInternalServerError(fmt.Errorf("failed to open merged file: %w", err))
 	}
-	defer mergedFile.Close()
+
+	// Ensure file is closed before temp dir cleanup
+	defer func() {
+		if closeErr := mergedFile.Close(); closeErr != nil {
+			h.logger.Error("failed to close merged file", zap.Error(closeErr))
+		}
+	}()
 
 	safeTitle := sanitizeFilename(video.Title)
 	fileName := fmt.Sprintf("%s.mp4", safeTitle)

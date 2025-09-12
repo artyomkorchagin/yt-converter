@@ -91,7 +91,6 @@ func (h *Handler) getVideo(c *gin.Context) error {
 				"c:a":      "aac",
 				"strict":   "experimental",
 				"movflags": "+faststart",
-				"codec":    "hevc",
 			}).
 		OverWriteOutput().
 		Run()
